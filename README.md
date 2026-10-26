@@ -1,207 +1,212 @@
-# DeveloperNetwork Frontend
+# Connect
 
-A modern, production-ready React web application for **DeveloperNetwork** — a professional networking platform built for software engineers.
-
----
-
-## Features
-
-- **Authentication**:
-  - Secure registration & login with client-side validation (React Hook Form + Zod).
-  - GitHub OAuth2 integration with automatic session validation on redirect.
-  - Zero-touch HttpOnly JWT cookie management (`SameSite=Strict`, `withCredentials: true`).
-- **Developer Discovery**:
-  - Browse suggested developer profiles via paginated feeds (0-indexed).
-  - Send connection requests with instant UI feedback, loading spinners, and duplicate (409) conflict prevention.
-- **Connection Requests**:
-  - View incoming pending connection requests with sender avatars and details.
-  - Accept or decline requests with real-time optimistic list updates.
-- **Real-Time & Cursor Chat**:
-  - Chat interface accessible at `/chat/:userId` for connected developers.
-  - History loaded using cursor-based backward pagination (`lastSeenTime` & `lastSeenId`).
-  - Real-time incoming messages via STOMP over SockJS with automatic reconnect and message deduplication.
-  - Date separators, automatic scroll to bottom, and scroll position preservation when loading older messages.
-- **Profile Management**:
-  - View user profile with avatar, name, and email.
-  - Edit name and upload new avatars via `multipart/form-data` with client-side image preview and file size validation.
-- **Design & UX**:
-  - Modern developer-centric theme with Tailwind CSS and Lucide React icons.
-  - Responsive layouts: desktop sidebar and mobile bottom navigation with drawer menu.
-  - Accessible dialogs, loading skeletons, error states with retry, and non-blocking toast notifications.
+A sleek, modern, and production-ready web frontend for **Connect** — a professional social networking platform crafted specifically for software developers and tech enthusiasts.
 
 ---
 
-## Tech Stack
+## Table of Contents
 
-| Layer | Technologies |
-|---|---|
-| **Framework** | React 18, TypeScript, Vite |
-| **Routing** | React Router DOM v6 |
-| **State & Data Fetching** | TanStack React Query v5 |
-| **HTTP Client** | Axios (centralized instance with interceptors) |
-| **WebSocket** | `@stomp/stompjs`, `sockjs-client` |
-| **Forms & Validation** | React Hook Form, Zod, `@hookform/resolvers` |
-| **Styling** | Tailwind CSS, PostCSS, Lucide React icons |
+- [About The Project](#about-the-project)
+- [What You Can Do](#what-you-can-do)
+- [User Walkthrough & Features](#user-walkthrough--features)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation & Setup](#installation--setup)
+- [Available Scripts](#available-scripts)
+- [How Real-Time Chat Works](#how-real-time-chat-works)
+- [Deployment Guide](#deployment-guide)
+- [Contributing & License](#contributing--license)
 
 ---
 
-## Folder Structure
+## About The Project
+
+**connectFE** is designed to help developers build meaningful professional networks. Whether you want to connect with fellow engineers working on similar stacks, collaborate on open-source projects, or chat directly in real-time, **connectFE** provides a fast, responsive, and intuitive interface to make it happen.
+
+Built with React 18, TypeScript, Tailwind CSS, and Vite, **connectFE** is lightweight, secure, fully responsive across mobile and desktop devices, and optimized for performance.
+
+---
+
+## What You Can Do
+
+With **connectFE**, you can:
+
+1. **Sign Up & Log In**: Create an account with your email or connect seamlessly using GitHub OAuth2.
+2. **Discover Developers**: Browse profiles of other developers in the community with paginated discovery cards.
+3. **Build Your Network**: Send connection requests to developers you want to network with.
+4. **Manage Requests**: View incoming connection requests and accept or decline them with immediate feedback.
+5. **Chat in Real-Time**: Message connected developers with live delivery powered by WebSockets (STOMP/SockJS).
+6. **Browse Chat History**: Seamlessly scroll through previous conversations with cursor-based pagination.
+7. **Personalize Your Profile**: Showcase your name, email, and upload a custom profile avatar with instant preview.
+
+---
+
+## User Walkthrough & Features
+
+### 🔐 Fast & Secure Authentication
+- **Email & Password**: Clean forms with validation feedback for first name, last name, email, and password.
+- **GitHub Integration**: One-click login with GitHub OAuth2.
+- **Persistent Sessions**: Your login status is maintained securely using browser credentials, so you remain logged in across page refreshes.
+
+### 🌐 Developer Discovery Feed
+- **Suggestion Feed**: An interactive grid showcasing fellow developers who are active on the platform.
+- **Instant Connection Action**: Click **Connect** on any developer card to send a request. The button updates immediately to keep you informed of pending requests.
+- **Responsive Pagination**: Easily navigate through pages of developers using intuitive pagination controls.
+
+### 📬 Received Connection Requests
+- **Dedicated Inbox**: Visit the **Requests** tab to view developers who have reached out to connect with you.
+- **One-Click Decisions**: Accept or decline requests instantly. Your requests list updates in real time upon confirmation.
+
+### 💬 Real-Time Messaging & Chat
+- **Instant Delivery**: Powered by WebSockets with STOMP messaging for low-latency communication.
+- **Rich Chat Interface**:
+  - Date separators for easy context.
+  - Message timestamps formatted in your local time zone.
+  - A live connection indicator showing whether you are connected in real-time.
+- **Scroll Preservation**: When you load older messages, your current scroll position is preserved so you never lose your place.
+- **Message Deduplication**: Intelligent message ID tracking prevents duplicate messages from displaying.
+
+### 👤 Developer Profile & Avatar Customization
+- **Profile Overview**: View your profile image, full name, and email address.
+- **Edit Modal**: Update your first and last name, or upload a new profile photo directly with client-side image preview before saving.
+
+---
+
+## Technology Stack
+
+| Category | Technology | Description |
+|---|---|---|
+| **Core Framework** | [React 18](https://react.dev/) | Modern UI library with concurrent rendering |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) | Strict static typing for clean, reliable code |
+| **Build & Tooling** | [Vite 5](https://vitejs.dev/) | Ultra-fast build tool and development server |
+| **Routing** | [React Router v6](https://reactrouter.com/) | Client-side routing with nested layouts and route guards |
+| **State Management** | [TanStack React Query v5](https://tanstack.com/query/latest) | Server-state caching, automatic refetching, and mutations |
+| **HTTP Client** | [Axios](https://axios-http.com/) | Centralized HTTP client configured with credentials |
+| **Real-Time Messaging** | [@stomp/stompjs](https://stomp-js.github.io/) & [sockjs-client](https://github.com/sockjs/sockjs-client) | STOMP protocol over WebSockets with SockJS fallback |
+| **Forms & Validation** | [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/) | Declarative schema validation and form handling |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) | Utility-first styling with custom dark-indigo theme |
+| **Icons** | [Lucide React](https://lucide.dev/) | Consistent, clean developer-focused icons |
+
+---
+
+## Project Structure
 
 ```
-src/
-├── api/
-│   ├── axiosInstance.ts       # Centralized Axios withCredentials client
-│   ├── apiError.ts            # Typed ApiError class
-│   └── errorHandler.ts        # Axios error parser & message resolver
+connectFE/
+├── index.html                         # Entry HTML file
+├── package.json                       # Scripts & dependencies
+├── vite.config.ts                     # Vite build configuration
+├── tailwind.config.js                 # Theme styling & palette
+├── vercel.json                        # Vercel SPA routing
+├── netlify.toml                       # Netlify SPA routing
+├── README.md                          # Project documentation
 │
-├── app/
-│   ├── App.tsx                # App root component
-│   ├── router.tsx             # React Router route tree & guards
-│   └── providers.tsx          # QueryClientProvider, AuthProvider, Toaster
-│
-├── components/
-│   ├── common/
-│   │   ├── Avatar.tsx         # Image avatar with fallback icon
-│   │   ├── Button.tsx         # Button with variants, sizes & loading states
-│   │   ├── EmptyState.tsx     # Reusable empty data placeholder
-│   │   ├── ErrorMessage.tsx   # Error alert with retry button
-│   │   ├── Input.tsx          # Form input with validation feedback
-│   │   ├── Loader.tsx         # Spinner and Skeleton loaders
-│   │   ├── Modal.tsx          # Accessible native dialog modal
-│   │   ├── NotFoundPage.tsx   # 404 error page
-│   │   └── Toast.tsx          # Toast notification container & hook
-│   │
-│   └── layout/
-│       ├── AppLayout.tsx      # Main application layout shell
-│       ├── Header.tsx         # Mobile header with menu trigger
-│       ├── MobileNavigation.tsx # Mobile bottom tab bar
-│       └── Sidebar.tsx        # Desktop sidebar navigation
-│
-├── constants/
-│   ├── api.ts                 # API path & WebSocket endpoint constants
-│   └── routes.ts              # Route path definitions
-│
-├── features/
-│   ├── auth/                  # Login, Register, AuthGuard, AuthContext
-│   ├── connections/           # Developer feed, Requests review, Cards
-│   ├── chat/                  # Chat interface, Message bubbles, Cursor history
-│   └── profile/               # Profile view and Multipart edit modal
-│
-├── hooks/
-│   └── useToast.ts            # Toast notification hook & manager
-│
-├── services/
-│   ├── authService.ts         # Register, Login, GitHub OAuth initiation
-│   ├── chatService.ts         # Send message & Cursor history REST endpoints
-│   ├── connectionService.ts   # Feed, Send, Received requests & Review
-│   └── userService.ts         # Profile retrieval and multipart update
-│
-├── styles/
-│   └── globals.css            # Tailwind directives and scrollbar styles
-│
-├── types/
-│   └── index.ts               # Complete TypeScript API models & interfaces
-│
-├── utils/
-│   ├── cn.ts                  # Class name merge utility
-│   └── formatDate.ts          # Date & timestamp formatting utilities
-│
-└── websocket/
-    ├── stompClient.ts         # Singleton STOMP client with SockJS fallback
-    └── chatSocketService.ts   # Subscription manager with dual-queue support
+└── src/
+    ├── api/                           # Centralized Axios client & error handlers
+    ├── app/                           # App component, router tree & providers
+    ├── components/
+    │   ├── common/                    # Button, Input, Modal, Avatar, Loader, Toast
+    │   └── layout/                    # AppLayout, Sidebar, Header, MobileNavigation
+    ├── constants/                     # API routes & route constants
+    ├── features/
+    │   ├── auth/                      # Login, Register & Session guards
+    │   ├── connections/               # Developers feed, Requests & Cards
+    │   ├── chat/                      # Chat screen, Message bubbles & Input
+    │   └── profile/                   # Profile page & Edit Profile modal
+    ├── hooks/                         # useToast & custom hooks
+    ├── services/                      # API service modules (auth, user, connections, chat)
+    ├── styles/                        # Tailwind CSS global styles
+    ├── types/                         # Shared TypeScript interfaces
+    ├── utils/                         # Date formatting & classname helpers
+    └── websocket/                     # STOMP client manager & chat socket service
 ```
 
 ---
 
 ## Getting Started
 
+Follow these steps to run **connectFE** locally on your machine.
+
 ### Prerequisites
 
-- Node.js (v18.0.0 or later recommended)
-- npm or pnpm
-- DeveloperNetwork Backend running at `http://localhost:8080` (or configured URL)
+- [Node.js](https://nodejs.org/) (version 18.0.0 or later recommended)
+- [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
+- A running Connect backend server (defaults to `http://localhost:8080`)
 
-### Installation
+### Installation & Setup
 
-1. Clone or navigate to the repository directory:
+1. **Clone or navigate into the repository**:
    ```bash
-   cd d:\AfterCollegeLearning\Connect
+   cd connectFE
    ```
 
-2. Install dependencies:
+2. **Install project dependencies**:
    ```bash
    npm install
    ```
 
-3. Set up environment variables:
+3. **Configure environment variables**:
+   Create a `.env` file in the project root:
    ```bash
    cp .env.example .env
    ```
-   Ensure `.env` contains:
+
+   Specify your backend URL in `.env`:
    ```env
    VITE_API_BASE_URL=http://localhost:8080
    ```
 
----
+4. **Start the local development server**:
+   ```bash
+   npm run dev
+   ```
 
-## Running the Application
-
-### Development Server
-```bash
-npm run dev
-```
-The application will be accessible at: `http://localhost:5173`.
-
-### Production Build
-```bash
-npm run build
-```
-Build output will be generated in `dist/`.
-
-### Preview Production Build
-```bash
-npm run preview
-```
-
-### Type Checking & Linting
-```bash
-npm run typecheck
-npm run lint
-```
+   Open your browser and navigate to:
+   ```
+   http://localhost:5173
+   ```
 
 ---
 
-## Backend Configuration & Deployment Guidelines
+## Available Scripts
 
-### Cross-Origin Cookie Requirements
-The backend issues an HttpOnly cookie named `jwt` with `SameSite=Strict`.
+In the project root, you can run the following scripts:
 
-- **Local Development**: When both frontend (`http://localhost:5173`) and backend (`http://localhost:8080`) are on `localhost`, modern browsers treat them as same-site.
-- **Production Deployment**: If the frontend is hosted on a separate domain (e.g. `https://devnetwork.vercel.app`) and backend on another (e.g. `https://api.devnetwork.com`), the backend MUST configure:
-  1. `SameSite=None; Secure` on the `jwt` cookie.
-  2. CORS header `Access-Control-Allow-Credentials: true`.
-  3. `Access-Control-Allow-Origin: https://devnetwork.vercel.app` (explicit origin, cannot be wildcard `*`).
-
-### GitHub OAuth Redirect URI
-In the backend's `application.yml` / `SecurityConfig`:
-```yaml
-app:
-  oauth2:
-    redirect-uri: http://localhost:5173
-```
-In production, update this to your production frontend URL (e.g. `https://your-domain.vercel.app`).
-
-### SPA Route Rewrites
-Single Page Applications using React Router require all paths to fallback to `index.html`. Pre-configured deployment files are included:
-- **Vercel**: `vercel.json`
-- **Netlify**: `netlify.toml`
+| Command | Description |
+|---|---|
+| `npm run dev` | Starts the Vite development server with Hot Module Replacement (HMR). |
+| `npm run build` | Runs TypeScript compilation (`tsc -b`) and bundles the app for production in `dist/`. |
+| `npm run preview` | Runs a local web server to preview the production build from `dist/`. |
+| `npm run typecheck` | Checks TypeScript types across the entire project without emitting code. |
+| `npm run lint` | Runs ESLint to check for code quality and enforce standards. |
 
 ---
 
-## Known Backend Limitations & Architectural Notes
+## How Real-Time Chat Works
 
-1. **No Logout Endpoint**: The backend does not implement `/api/v1/auth/logout`. Logout in the frontend resets the local session context and navigates to the login screen.
-2. **WebSocket Authentication**: The backend's `WebsocketAuthInterceptor` checks for a `Bearer` header on the native STOMP CONNECT frame. Because the JWT is stored in an HttpOnly cookie, JavaScript cannot read it to populate this header. The app connects via SockJS (`/ws`) and uses the documented REST `/api/v1/chat/send` for reliable, authenticated message delivery.
-3. **Queue Destination Naming**: The API reference specifies `/user/queue/messages` (plural), whereas backend implementation uses `/queue/message` (singular). The frontend subscribes to both destinations simultaneously with message deduplication to maintain compatibility.
-4. **Chat Restricted to Accepted Connections**: The backend rejects messaging or loading history for users who are not yet accepted connections (`IllegalStateException`). The chat interface gracefully notifies the user and provides quick navigation back to developer discovery.
-5. **Detailed Checklist**: See `docs/api-integration-checklist.md` for the complete operational breakdown.
+1. **Automatic Connection**: When you log in, **connectFE** initializes a background STOMP connection to the backend WebSocket broker (`/ws`).
+2. **Receiving Messages**: The application listens on the user's private queue for incoming messages. As soon as another developer sends you a message, it appears instantly in your chat window without needing to refresh.
+3. **Sending Messages**: Messages you type are sent securely, immediately rendered in your conversation, and dispatched to the recipient.
+4. **Historical Conversations**: When you open a conversation, previous messages are loaded in chronological order. Clicking **Load older messages** fetches earlier history using high-performance cursor pagination.
+
+---
+
+## Deployment Guide
+
+**connectFE** is pre-configured for seamless single-page application (SPA) deployment on platforms like Vercel and Netlify.
+
+### Deploying to Vercel
+1. Push your repository to GitHub, GitLab, or Bitbucket.
+2. Import the project into [Vercel](https://vercel.com/).
+3. Under **Environment Variables**, add:
+   - `VITE_API_BASE_URL`: The URL of your deployed backend (e.g., `https://api.yourdomain.com`).
+4. Click **Deploy**. Vercel will automatically use the included `vercel.json` for route rewrites.
+
+
+## Contributing & License
+
+Contributions are welcome! If you'd like to improve the application, feel free to fork the repository, create a feature branch, and submit a pull request.
+
+This project is licensed under the **MIT License**.
