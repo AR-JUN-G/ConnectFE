@@ -4,7 +4,8 @@ export const ROUTES = {
   HOME: '/',
   DEVELOPERS: '/developers',
   REQUESTS: '/requests',
+  MESSAGES: '/messages',
   PROFILE: '/profile',
-  CHAT: '/chat/:userId',
-  chatWith: (userId: number | string) => `/chat/${userId}`,
+  CHAT: '/messages/:userId',
+  chatWith: (userId: number | string) => `/messages/${userId}`,
 } as const;

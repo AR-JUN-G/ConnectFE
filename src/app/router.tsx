@@ -9,7 +9,7 @@ import { RegisterPage } from '@/features/auth/pages/RegisterPage';
 import { DevelopersPage } from '@/features/connections/pages/DevelopersPage';
 import { RequestsPage } from '@/features/connections/pages/RequestsPage';
 import { ProfilePage } from '@/features/profile/pages/ProfilePage';
-import { ChatPage } from '@/features/chat/pages/ChatPage';
+import { MessagesPage } from '@/features/chat/pages/MessagesPage';
 import { NotFoundPage } from '@/components/common/NotFoundPage';
 
 export const router = createBrowserRouter([
@@ -32,8 +32,11 @@ export const router = createBrowserRouter([
           { path: ROUTES.HOME, element: <Navigate to={ROUTES.DEVELOPERS} replace /> },
           { path: ROUTES.DEVELOPERS, element: <DevelopersPage /> },
           { path: ROUTES.REQUESTS, element: <RequestsPage /> },
+          { path: ROUTES.MESSAGES, element: <MessagesPage /> },
+          { path: ROUTES.CHAT, element: <MessagesPage /> },
+          { path: '/chat', element: <Navigate to={ROUTES.MESSAGES} replace /> },
+          { path: '/chat/:userId', element: <MessagesPage /> },
           { path: ROUTES.PROFILE, element: <ProfilePage /> },
-          { path: ROUTES.CHAT, element: <ChatPage /> },
         ],
       },
     ],

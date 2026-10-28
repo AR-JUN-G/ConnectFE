@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getReceivedRequests, reviewConnectionRequest } from '@/services/connectionService';
 import { useNotify } from '@/hooks/useToast';
+import { upsertConversation } from '@/features/chat/utils/conversationStorage';
 import type { ReviewAction } from '@/types';
 import { ApiError } from '@/api/apiError';
 
@@ -34,6 +35,18 @@ export function useReceivedRequests() {
           ? 'Connection request accepted!'
           : 'Connection request rejected.',
       );
+      if (action === 'ACCEPT') {
+        const item = (requestsQuery.data ?? []).find((r) => r.id === requestId);
+        if (item) {
+          upsertConversation({
+            userId: item.id,
+            name: `${item.firstName} ${item.lastName}`,
+            avatar: item.profileImageUrl,
+            lastMessage: 'Connected! Say hello.',
+          });
+        }
+      }
+
       // Remove reviewed request from cached data immediately
       queryClient.setQueryData(
         RECEIVED_REQUESTS_KEY,

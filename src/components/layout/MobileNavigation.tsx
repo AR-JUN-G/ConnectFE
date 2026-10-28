@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { Users, UserCheck, User } from 'lucide-react';
+import { Users, UserCheck, MessageSquare, User } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 
 const navItems = [
-  { to: ROUTES.DEVELOPERS, label: 'Discover', icon: <Users size={22} /> },
-  { to: ROUTES.REQUESTS, label: 'Requests', icon: <UserCheck size={22} /> },
-  { to: ROUTES.PROFILE, label: 'Profile', icon: <User size={22} /> },
+  { to: ROUTES.DEVELOPERS, label: 'Discover', icon: <Users size={20} /> },
+  { to: ROUTES.REQUESTS, label: 'Requests', icon: <UserCheck size={20} /> },
+  { to: ROUTES.MESSAGES, label: 'Messages', icon: <MessageSquare size={20} /> },
+  { to: ROUTES.PROFILE, label: 'Profile', icon: <User size={20} /> },
 ];
 
 export function MobileNavigation() {

@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { Code2 } from 'lucide-react';
 import { registerSchema, type RegisterFormValues } from '../validation/authSchemas';
 import { register as registerUser } from '@/services/authService';
 import { useAuth } from '../hooks/useAuth';
 import { ApiError } from '@/api/apiError';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
+import { Logo } from '@/components/common/Logo';
 import { ROUTES } from '@/constants/routes';
 
 export function RegisterPage() {
@@ -50,11 +50,8 @@ export function RegisterPage() {
     <div className="min-h-screen flex">
       {/* Left branding panel */}
       <div className="hidden lg:flex flex-col justify-center items-start px-16 w-1/2 bg-primary-950 text-white">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center">
-            <Code2 size={22} className="text-white" />
-          </div>
-          <span className="text-2xl font-bold tracking-tight">DevNetwork</span>
+        <div className="mb-8">
+          <Logo size="lg" textColor="text-white" />
         </div>
         <h1 className="text-4xl font-bold leading-tight mb-4">
           Start building<br />your dev network.
@@ -68,11 +65,8 @@ export function RegisterPage() {
       <div className="flex flex-col justify-center items-center flex-1 px-6 py-12 bg-white">
         <div className="w-full max-w-sm">
           {/* Mobile brand */}
-          <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
-              <Code2 size={16} className="text-white" />
-            </div>
-            <span className="font-bold text-gray-900 text-lg">DevNetwork</span>
+          <div className="mb-8 lg:hidden">
+            <Logo size="md" />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-1">Create an account</h2>

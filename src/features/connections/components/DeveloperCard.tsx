@@ -60,6 +60,7 @@ export function DeveloperCard({
 
         <Link
           to={ROUTES.chatWith(developer.id)}
+          state={{ recipientName: fullName, recipientAvatar: developer.profileImageUrl }}
           className="p-2 border border-gray-200 rounded-lg text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors"
           title={`Message ${developer.firstName}`}
           aria-label={`Message ${developer.firstName}`}

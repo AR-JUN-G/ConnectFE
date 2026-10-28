@@ -6,8 +6,14 @@ import type { ChatMessage } from '@/types';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useNotify } from '@/hooks/useToast';
 import { ApiError } from '@/api/apiError';
+import { upsertConversation } from '../utils/conversationStorage';
+import { formatMessageTime } from '@/utils/formatDate';
 
-export function useChat(otherUserId: number) {
+export function useChat(
+  otherUserId: number,
+  recipientName?: string,
+  recipientAvatar?: string,
+) {
   const { currentUser } = useAuth();
   const notify = useNotify();
 
@@ -51,6 +57,17 @@ export function useChat(otherUserId: number) {
       setMessages(history);
       messageIdsRef.current = new Set(history.map((m) => m.id));
       setHasMore(history.length >= pageSize);
+
+      if (history.length > 0) {
+        const last = history[history.length - 1];
+        upsertConversation({
+          userId: otherUserId,
+          name: recipientName || `Developer #${otherUserId}`,
+          avatar: recipientAvatar,
+          lastMessage: last.content,
+          lastMessageTime: formatMessageTime(last.createdAt),
+        });
+      }
     } catch (err) {
       if (err instanceof ApiError) {
         setHistoryError(err.message);
@@ -60,7 +77,7 @@ export function useChat(otherUserId: number) {
     } finally {
       setIsLoadingHistory(false);
     }
-  }, [otherUserId, pageSize]);
+  }, [otherUserId, pageSize, recipientName, recipientAvatar]);
 
   useEffect(() => {
     void fetchInitialHistory();
@@ -132,12 +149,20 @@ export function useChat(otherUserId: number) {
         }
         return [...prev, incoming];
       });
+
+      upsertConversation({
+        userId: otherUserId,
+        name: recipientName || `Developer #${otherUserId}`,
+        avatar: recipientAvatar,
+        lastMessage: incoming.content,
+        lastMessageTime: formatMessageTime(incoming.createdAt),
+      });
     });
 
     return () => {
       unsubscribe();
     };
-  }, [otherUserId]);
+  }, [otherUserId, recipientName, recipientAvatar]);
 
   // Send message via REST
   const sendMessage = useCallback(
@@ -161,6 +186,14 @@ export function useChat(otherUserId: number) {
           return [...prev, savedMessage];
         });
 
+        upsertConversation({
+          userId: otherUserId,
+          name: recipientName || `Developer #${otherUserId}`,
+          avatar: recipientAvatar,
+          lastMessage: savedMessage.content,
+          lastMessageTime: formatMessageTime(savedMessage.createdAt),
+        });
+
         return savedMessage;
       } catch (err) {
         if (err instanceof ApiError) {
@@ -173,7 +206,7 @@ export function useChat(otherUserId: number) {
         setIsSending(false);
       }
     },
-    [otherUserId, isSending, notify],
+    [otherUserId, isSending, notify, recipientName, recipientAvatar],
   );
 
   return {

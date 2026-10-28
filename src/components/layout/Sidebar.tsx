@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
-import { Users, UserCheck, User, Code2, LogOut } from 'lucide-react';
+import { Users, UserCheck, MessageSquare, User, LogOut } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Avatar } from '@/components/common/Avatar';
+import { Logo } from '@/components/common/Logo';
 import { cn } from '@/utils/cn';
 
 interface NavItem {
@@ -14,6 +15,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { to: ROUTES.DEVELOPERS, label: 'Discover', icon: <Users size={20} /> },
   { to: ROUTES.REQUESTS, label: 'Requests', icon: <UserCheck size={20} /> },
+  { to: ROUTES.MESSAGES, label: 'Messages', icon: <MessageSquare size={20} /> },
   { to: ROUTES.PROFILE, label: 'Profile', icon: <User size={20} /> },
 ];
 
@@ -32,13 +34,8 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   return (
     <aside className="flex flex-col h-full">
       {/* Brand */}
-      <div className="px-5 py-5 flex items-center gap-2.5 border-b border-gray-100">
-        <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
-          <Code2 size={18} className="text-white" />
-        </div>
-        <span className="font-bold text-gray-900 text-lg tracking-tight">
-          DevNetwork
-        </span>
+      <div className="px-5 py-5 border-b border-gray-100">
+        <Logo size="md" />
       </div>
 
       {/* Navigation */}

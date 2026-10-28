@@ -22,9 +22,9 @@ export function ChatHeader({
     <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
       <div className="flex items-center gap-3">
         <Link
-          to={ROUTES.DEVELOPERS}
+          to={ROUTES.MESSAGES}
           className="p-1.5 -ml-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-          aria-label="Back to developers"
+          aria-label="Back to messages"
         >
           <ArrowLeft size={18} />
         </Link>

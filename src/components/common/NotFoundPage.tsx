@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Compass } from 'lucide-react';
 import { Button } from './Button';
+import { Logo } from './Logo';
 import { ROUTES } from '@/constants/routes';
 
 export function NotFoundPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-primary-100 flex items-center justify-center text-primary-600 mb-6">
-        <Compass size={36} />
+      <div className="mb-6">
+        <Logo size="xl" showText={false} />
       </div>
 
       <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
@@ -21,7 +21,7 @@ export function NotFoundPage() {
       </p>
 
       <Link to={ROUTES.HOME}>
-        <Button variant="primary">Return to DevNetwork</Button>
+        <Button variant="primary">Return to Connect</Button>
       </Link>
     </div>
   );
