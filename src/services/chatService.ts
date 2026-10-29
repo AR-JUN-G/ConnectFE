@@ -21,8 +21,9 @@ export async function sendMessage(data: ChatSendRequest): Promise<ChatMessage> {
 /**
  * Retrieve chat history using cursor-based backward pagination.
  *
- * This GET endpoint accepts a JSON request body (non-standard but valid HTTP).
- * Axios supports this via the `data` field in the request config.
+ * Browsers do not send entity bodies with GET requests (Fetch and XHR drop them).
+ * Therefore, query parameters (otherUserId, lastSeenTime, lastSeenId, size) are
+ * passed in `params`, while `data` is also attached for clients that support GET bodies.
  *
  * Cursor fields:
  *   - omit both for the initial load (returns newest `size` messages)
@@ -30,9 +31,6 @@ export async function sendMessage(data: ChatSendRequest): Promise<ChatMessage> {
  *
  * The response is an array of ChatMessage objects sorted from oldest to newest.
  * If the array length < size, there are no more older messages.
- *
- * @param body  - otherUserId and optional cursor (lastSeenTime, lastSeenId)
- * @param size  - number of messages to return (default: 30)
  */
 export async function getChatHistory(
   body: ChatHistoryRequest,
@@ -42,7 +40,12 @@ export async function getChatHistory(
     const response = await apiClient.request<ChatMessage[]>({
       method: 'GET',
       url: API_PATHS.CHAT.HISTORY,
-      params: { size },
+      params: {
+        otherUserId: body.otherUserId,
+        ...(body.lastSeenTime ? { lastSeenTime: body.lastSeenTime } : {}),
+        ...(body.lastSeenId ? { lastSeenId: body.lastSeenId } : {}),
+        size,
+      },
       data: body,
     });
     return response.data;

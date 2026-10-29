@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { ArrowUp, Users, MessageSquare, MessageSquarePlus } from 'lucide-react';
 import { useChat } from '../hooks/useChat';
 import { ChatHeader } from '../components/ChatHeader';
@@ -7,11 +8,13 @@ import { MessageBubble } from '../components/MessageBubble';
 import { MessageInput } from '../components/MessageInput';
 import { ConversationList } from '../components/ConversationList';
 import { NewChatModal } from '../components/NewChatModal';
+import { getStoredConversations } from '../utils/conversationStorage';
 import { Loader } from '@/components/common/Loader';
 import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Logo } from '@/components/common/Logo';
 import { ROUTES } from '@/constants/routes';
+import type { UserCardResponse } from '@/types';
 
 interface LocationState {
   recipientName?: string;
@@ -22,11 +25,36 @@ export function MessagesPage() {
   const { userId } = useParams<{ userId: string }>();
   const location = useLocation();
   const state = (location.state as LocationState | null) ?? {};
+  const queryClient = useQueryClient();
 
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
 
   const numericUserId = Number(userId);
   const hasSelectedUser = !isNaN(numericUserId) && numericUserId > 0;
+
+  // Resolve developer name & avatar from location state, local storage, or React Query cache
+  const storedContact = hasSelectedUser
+    ? getStoredConversations().find((c) => c.userId === numericUserId)
+    : undefined;
+
+  const cachedDeveloper = hasSelectedUser
+    ? queryClient
+        .getQueriesData<UserCardResponse[]>({ queryKey: ['connections'] })
+        .flatMap(([, data]) => (Array.isArray(data) ? data : []))
+        .find((u) => u.id === numericUserId)
+    : undefined;
+
+  const resolvedName =
+    state.recipientName ||
+    (storedContact?.name && !storedContact.name.startsWith('Developer #')
+      ? storedContact.name
+      : undefined) ||
+    (cachedDeveloper ? `${cachedDeveloper.firstName} ${cachedDeveloper.lastName}` : undefined);
+
+  const resolvedAvatar =
+    state.recipientAvatar ||
+    storedContact?.avatar ||
+    cachedDeveloper?.profileImageUrl;
 
   const {
     messages,
@@ -42,8 +70,8 @@ export function MessagesPage() {
     retryHistory,
   } = useChat(
     hasSelectedUser ? numericUserId : 0,
-    state.recipientName,
-    state.recipientAvatar,
+    resolvedName,
+    resolvedAvatar,
   );
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -93,8 +121,8 @@ export function MessagesPage() {
             {/* Header */}
             <ChatHeader
               userId={numericUserId}
-              recipientName={state.recipientName}
-              recipientAvatar={state.recipientAvatar}
+              recipientName={resolvedName}
+              recipientAvatar={resolvedAvatar}
               wsStatus={wsStatus}
             />
 

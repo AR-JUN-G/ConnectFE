@@ -5,7 +5,7 @@ import {
   type ReactNode,
 } from 'react';
 import { getProfile } from '@/services/userService';
-import { logoutClientSide } from '@/services/authService';
+import { logout as apiLogout } from '@/services/authService';
 import { stompClientManager } from '@/websocket/stompClient';
 import type { UserProfile } from '@/types';
 import { AuthContext } from './AuthContextType';
@@ -59,11 +59,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
   }, []);
 
-  const logout = useCallback(() => {
-    logoutClientSide();
-    setCurrentUser(null);
-    stompClientManager.disconnect();
-    // Navigation is handled by the component calling logout
+  const logout = useCallback(async () => {
+    try {
+      await apiLogout();
+    } catch {
+      // Proceed with state cleanup regardless of network error
+    } finally {
+      setCurrentUser(null);
+      stompClientManager.disconnect();
+    }
   }, []);
 
   // Disconnect WebSocket on unmount

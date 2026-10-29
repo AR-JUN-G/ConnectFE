@@ -1,12 +1,15 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+const rawBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+// Strip any trailing slashes to prevent double slashes (e.g. "//ws")
+const cleanBaseUrl = rawBaseUrl.replace(/\/+$/, '');
 
-export const API_BASE_URL = BASE_URL;
+export const API_BASE_URL = cleanBaseUrl;
 
 export const API_PATHS = {
   AUTH: {
     REGISTER: '/api/v1/auth/register',
     AUTHENTICATE: '/api/v1/auth/authenticate',
-    GITHUB_OAUTH: `${BASE_URL}/oauth2/authorization/github`,
+    LOGOUT: '/api/v1/auth/logout',
+    GITHUB_OAUTH: `${cleanBaseUrl}/oauth2/authorization/github`,
   },
   USERS: {
     PROFILE: '/api/v1/users/profile',
@@ -24,8 +27,8 @@ export const API_PATHS = {
 } as const;
 
 export const WS_ENDPOINTS = {
-  SOCKJS: `${BASE_URL}/ws`,
-  NATIVE: BASE_URL.replace('http', 'ws') + '/ws-native',
+  SOCKJS: `${cleanBaseUrl}/ws`,
+  NATIVE: cleanBaseUrl.replace(/^http/, 'ws') + '/ws-native',
   DESTINATIONS: {
     APP_PREFIX: '/app',
     USER_PREFIX: '/user',

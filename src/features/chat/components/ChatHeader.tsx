@@ -31,15 +31,17 @@ export function ChatHeader({
 
         <Avatar
           src={recipientAvatar}
-          alt={recipientName ?? `User #${userId}`}
+          alt={recipientName ?? `Developer #${userId}`}
           size="sm"
         />
 
         <div>
           <h2 className="text-sm font-semibold text-gray-900">
-            {recipientName ?? `Developer #${userId}`}
+            {recipientName || `Developer #${userId}`}
           </h2>
-          <p className="text-[11px] text-gray-500">User ID: {userId}</p>
+          <p className="text-[11px] text-gray-500">
+            {recipientName ? `User ID: ${userId}` : 'Connected Developer'}
+          </p>
         </div>
       </div>
 

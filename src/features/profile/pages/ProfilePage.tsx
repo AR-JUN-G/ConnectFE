@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Mail, Edit3, ShieldCheck } from 'lucide-react';
+import { Mail, Edit3, ShieldCheck, LogOut } from 'lucide-react';
 import { useProfile } from '../hooks/useProfile';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { EditProfileModal } from '../components/EditProfileModal';
 import { Avatar } from '@/components/common/Avatar';
 import { Button } from '@/components/common/Button';
 import { Loader } from '@/components/common/Loader';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
+import { ROUTES } from '@/constants/routes';
 
 export function ProfilePage() {
   const { profile, isLoading, isError, error, refetch } = useProfile();
+  const { logout } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (isLoading) {
@@ -38,14 +41,28 @@ export function ProfilePage() {
                 className="w-24 h-24 text-3xl"
               />
             </div>
-            <Button
-              variant="secondary"
-              size="sm"
-              leftIcon={<Edit3 size={16} />}
-              onClick={() => setIsEditModalOpen(true)}
-            >
-              Edit Profile
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                leftIcon={<Edit3 size={16} />}
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                Edit Profile
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                leftIcon={<LogOut size={16} />}
+                onClick={async () => {
+                  await logout();
+                  window.location.href = ROUTES.LOGIN;
+                }}
+              >
+                Sign out
+              </Button>
+            </div>
           </div>
 
           <div>

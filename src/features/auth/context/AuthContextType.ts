@@ -9,8 +9,8 @@ export interface AuthContextValue {
   refreshProfile: () => Promise<void>;
   /** Set auth state directly (e.g., after login with a profile response). */
   setCurrentUser: (user: UserProfile | null) => void;
-  /** Log out: clear state, disconnect WebSocket, navigate to /login. */
-  logout: () => void;
+  /** Log out: invalidate server session cookie, clear state, disconnect WebSocket. */
+  logout: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

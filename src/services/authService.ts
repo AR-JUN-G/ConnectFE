@@ -47,15 +47,14 @@ export function initiateGitHubOAuth(): void {
 }
 
 /**
- * Client-side logout.
- *
- * LIMITATION: No backend logout endpoint is documented in API_Reference.md.
- * This function clears React auth state and redirects to login.
- * The HttpOnly JWT cookie remains valid on the server until its Max-Age expires
- * (24 hours). To implement true server-side session invalidation, a
- * POST /api/v1/auth/logout endpoint would need to be added to the backend.
+ * Log out the current user by invalidating the session on the backend.
+ * The server clears the HttpOnly JWT cookie by setting Max-Age=0.
  */
-export function logoutClientSide(): void {
-  // Nothing to clear from storage — JWT is in an HttpOnly cookie.
-  // The AuthContext handles state reset; the caller handles navigation.
+export async function logout(): Promise<void> {
+  try {
+    await apiClient.post(API_PATHS.AUTH.LOGOUT);
+  } catch (error) {
+    // Log error but allow client cleanup to proceed
+    console.error('Logout API request failed:', error);
+  }
 }
