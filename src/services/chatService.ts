@@ -1,7 +1,13 @@
 import apiClient from '@/api/axiosInstance';
 import { handleAxiosError } from '@/api/errorHandler';
 import { API_PATHS } from '@/constants/api';
-import type { ChatHistoryRequest, ChatMessage, ChatSendRequest } from '@/types';
+import type {
+  ChatHistoryRequest,
+  ChatMessage,
+  ChatSendRequest,
+  ConversationResponse,
+  ScrollResponse,
+} from '@/types';
 
 /**
  * Send a chat message via REST.
@@ -48,6 +54,36 @@ export async function getChatHistory(
       },
       data: body,
     });
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+}
+
+/**
+ * Retrieve all conversations for the current user with cursor-based pagination.
+ *
+ * Returns the latest message per conversation partner, ordered by recency.
+ * Each item includes the partner's name, avatar, last message, and timestamp.
+ *
+ * Cursor fields:
+ *   - omit `cursor` for the first page (returns newest `limit` conversations)
+ *   - provide `cursor` (last returned message ID) to fetch older conversations
+ */
+export async function getConversations(
+  cursor?: number,
+  limit: number = 15,
+): Promise<ScrollResponse<ConversationResponse>> {
+  try {
+    const response = await apiClient.get<ScrollResponse<ConversationResponse>>(
+      API_PATHS.CHAT.CONVERSATIONS,
+      {
+        params: {
+          ...(cursor ? { cursor } : {}),
+          limit,
+        },
+      },
+    );
     return response.data;
   } catch (error) {
     handleAxiosError(error);

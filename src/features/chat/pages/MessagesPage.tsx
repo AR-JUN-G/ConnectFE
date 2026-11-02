@@ -3,6 +3,7 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowUp, Users, MessageSquare, MessageSquarePlus } from 'lucide-react';
 import { useChat } from '../hooks/useChat';
+import { useConversations } from '../hooks/useConversations';
 import { ChatHeader } from '../components/ChatHeader';
 import { MessageBubble } from '../components/MessageBubble';
 import { MessageInput } from '../components/MessageInput';
@@ -32,7 +33,13 @@ export function MessagesPage() {
   const numericUserId = Number(userId);
   const hasSelectedUser = !isNaN(numericUserId) && numericUserId > 0;
 
-  // Resolve developer name & avatar from location state, local storage, or React Query cache
+  // ── Name/avatar resolution (priority: location state → API conversations → localStorage → React Query cache)
+  const { conversations: apiConversations } = useConversations();
+
+  const apiContact = hasSelectedUser
+    ? apiConversations.find((c) => c.receiverID === numericUserId)
+    : undefined;
+
   const storedContact = hasSelectedUser
     ? getStoredConversations().find((c) => c.userId === numericUserId)
     : undefined;
@@ -46,6 +53,7 @@ export function MessagesPage() {
 
   const resolvedName =
     state.recipientName ||
+    apiContact?.receiverName ||
     (storedContact?.name && !storedContact.name.startsWith('Developer #')
       ? storedContact.name
       : undefined) ||
@@ -53,6 +61,7 @@ export function MessagesPage() {
 
   const resolvedAvatar =
     state.recipientAvatar ||
+    apiContact?.receiverAvatarUrl ||
     storedContact?.avatar ||
     cachedDeveloper?.profileImageUrl;
 
@@ -71,7 +80,7 @@ export function MessagesPage() {
   } = useChat(
     hasSelectedUser ? numericUserId : 0,
     resolvedName,
-    resolvedAvatar,
+    resolvedAvatar ?? undefined,
   );
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -122,7 +131,7 @@ export function MessagesPage() {
             <ChatHeader
               userId={numericUserId}
               recipientName={resolvedName}
-              recipientAvatar={resolvedAvatar}
+              recipientAvatar={resolvedAvatar ?? undefined}
               wsStatus={wsStatus}
             />
 
@@ -228,7 +237,8 @@ export function MessagesPage() {
               Your Messages
             </h2>
             <p className="text-sm text-gray-500 max-w-sm mb-6 leading-relaxed">
-              Select an existing conversation from the list, or start a new chat with any connected developer.
+              Select an existing conversation from the list, or start a new chat with any connected
+              developer.
             </p>
             <div className="flex items-center gap-3">
               <Button

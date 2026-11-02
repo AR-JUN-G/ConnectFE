@@ -1,6 +1,6 @@
-// ─── Shared API Types ────────────────────────────────────────────────────────
+// ─── Shared API Types ───────────────────────────────────────────────────────────
 
-/** UserCardResponse — returned by feed and received requests endpoints. */
+/** UserCardResponse - returned by feed and received requests endpoints. */
 export interface UserCardResponse {
   id: number;
   firstName: string;
@@ -49,7 +49,25 @@ export interface ChatMessage {
   createdAt: string; // ISO 8601 LocalDateTime string
 }
 
-// ─── Request Types ────────────────────────────────────────────────────────────
+/** A single conversation summary returned by GET /api/v1/chat/conversations */
+export interface ConversationResponse {
+  receiverID: number;
+  receiverName: string;
+  receiverAvatarUrl: string | null;
+  lastMessage: string;
+  lastMessageTime: string; // ISO 8601 LocalDateTime
+  lastMessageId: number;
+  unreadCount: number | null;
+}
+
+/** Generic paginated scroll-response wrapper (cursor-based). */
+export interface ScrollResponse<T> {
+  items: T[];
+  nextCursor: number | null;
+  hasMore: boolean;
+}
+
+// ─── Request Types ───────────────────────────────────────────────────────────────
 
 export interface RegisterRequest {
   firstName: string;
@@ -74,7 +92,7 @@ export interface ChatHistoryRequest {
   lastSeenId?: number;
 }
 
-// ─── Error Response ───────────────────────────────────────────────────────────
+// ─── Error Response ──────────────────────────────────────────────────────────────
 
 export interface ApiErrorResponse {
   status: number;
@@ -85,6 +103,6 @@ export interface ApiErrorResponse {
   validationErrors?: Record<string, string>;
 }
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
+// ─── Enums ──────────────────────────────────────────────────────────────────────
 
 export type ReviewAction = 'ACCEPT' | 'REJECT';

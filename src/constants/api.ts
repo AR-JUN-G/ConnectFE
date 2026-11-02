@@ -23,6 +23,7 @@ export const API_PATHS = {
   CHAT: {
     SEND: '/api/v1/chat/send',
     HISTORY: '/api/v1/chat/history',
+    CONVERSATIONS: '/api/v1/chat/conversations',
   },
 } as const;
 
